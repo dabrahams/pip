@@ -1,3 +1,6 @@
 [submodule "scripttest"]
 	path = scripttest
 	url = git://github.com/ryppl/scripttest.git
+[submodule "distutils2"]
+	path = distutils2
+	url = git://github.com/ryppl/distutils2.git
