@@ -357,7 +357,12 @@ class HTMLPage(object):
                                 cache.set_is_archive(url)
                             return None
             logger.debug('Getting page %s' % url)
-            resp = urllib2.urlopen(url)
+            try:
+                resp = urllib2.urlopen(url)
+            except IOError:
+                import urllib
+                resp = urllib2.urlopen(urllib.basejoin(url,'index.html'))
+
             real_url = resp.geturl()
             headers = resp.info()
             inst = cls(resp.read(), real_url, headers)
