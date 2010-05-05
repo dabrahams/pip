@@ -227,6 +227,14 @@ class PackageFinder(object):
             if link.url in seen_links:
                 continue
             seen_links[link.url] = None
+
+            from pip.vcs import vcs
+            for repo in vcs.repositories(link):
+                for rev,tag in repo.get_tag_revs().iteritems():
+                    yield (pkg_resources.parse_version(tag),
+                           Link(link.url+'@'+rev, link.comes_from),
+                           tag)
+
             if link.egg_fragment:
                 egg_info = link.egg_fragment
             else:

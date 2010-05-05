@@ -118,17 +118,25 @@ class Git(VersionControl):
             [self.cmd, 'rev-parse', 'HEAD'], show_stdout=False, cwd=location)
         return current_rev.strip()
 
-    def get_tag_revs(self, location):
-        tags = call_subprocess(
-            [self.cmd, 'tag', '-l'],
-            show_stdout=False, raise_on_returncode=False, cwd=location)
-        tag_revs = []
-        for line in tags.splitlines():
-            tag = line.strip()
-            rev = call_subprocess(
-                [self.cmd, 'rev-parse', tag], show_stdout=False, cwd=location)
-            tag_revs.append((rev.strip(), tag))
-        tag_revs = dict(tag_revs)
+    def get_tag_revs(self, location = None):
+        tag_revs = {}
+        if location is None:
+            # If no location supplied, pull tags directly from the remote repository
+            url,rev = self.get_url_rev()
+            remote_tags = call_subprocess(
+                [self.cmd, 'ls-remote', url],show_stdout=False)
+            for line in remote_tags.splitlines():
+                rev,tag = line.strip().split()
+                tag_revs[rev] = tag.rsplit('/',1)[-1]
+        else:
+            tags = call_subprocess(
+                [self.cmd, 'tag', '-l'],
+                show_stdout=False, raise_on_returncode=False, cwd=location)
+            for line in tags.splitlines():
+                tag = line.strip()
+                rev = call_subprocess(
+                    [self.cmd, 'rev-parse', tag], show_stdout=False, cwd=location)
+                tag_revs[rev.strip()] = tag
         return tag_revs
 
     def get_branch_revs(self, location):
