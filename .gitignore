@@ -8,3 +8,7 @@ test-scratch/
 log*.txt
 *.orig
 .gitignore
+**/#*#
+**/.#*
+**/*~
+**/.noseids
