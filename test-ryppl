@@ -35,5 +35,5 @@ if [[ x"$1" == "x--pdb" ]]; then
     PDB="python -m pdb"
 fi
 
-$PDB "$MY_ROOT"/scripts/ryppl install --no-install -i http://dabrahams.github.com/ryppl-test-index boost-python==1.41
+$PDB "$MY_ROOT"/scripts/ryppl $* install --no-install -i http://dabrahams.github.com/ryppl-test-index boost-python==1.41
 
