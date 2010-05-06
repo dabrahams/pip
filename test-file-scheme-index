@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Just so we don't inadvertently clobber our source
+cd /tmp
+
+### First get rid of all .pyc files.  Sometimes when debugging these
+### hang around because python is using them and then pdb runs
+### outdated code the next time around.
+
+## Find out where this script resides
+## (http://forums.macosxhints.com/archive/index.php/t-73839.html)
+
+## Linux
+LSOF=$(lsof -p $$ | grep -E "/"$(basename $0)"$")
+MY_PATH=$(echo $LSOF | sed -r s/'^([^\/]+)\/'/'\/'/1 2>/dev/null)
+if [ $? -ne 0 ]; then
+    ## OSX
+    MY_PATH=$(echo $LSOF | sed -E s/'^([^\/]+)\/'/'\/'/1 2>/dev/null)
+fi
+MY_ROOT=$(dirname $MY_PATH)
+
+rm `find "$MY_ROOT" -name '*.pyc'`
+rm -rf "$MY_ROOT"/build "$MY_ROOT"/dist "$MY_ROOT"/pip.egg-info
+
+rm -rf $HOME/.virtualenvs/clean
+virtualenv --no-site-packages --unzip-setuptools --distribute $HOME/.virtualenvs/clean
+export PATH=$HOME/.virtualenvs/clean/bin:"$PATH"
+export PYTHONPATH=$MY_ROOT:$MY_ROOT/scripttest:$MY_ROOT/distutils2/src
+#export EDITOR=/Users/dave/bin/emacsx 
+# pip install docutils # for distutils2, which uses docutils if it is present
+pip uninstall -y pip
+source $HOME/.virtualenvs/clean/bin/activate
+PDB=""
+if [[ x"$1" == "x--pdb" ]]; then
+    shift
+    PDB="python -m pdb"
+fi
+
+$PDB "$MY_ROOT"/scripts/pip $* install -vvv -i file://"$MY_ROOT"/tests/index FSPkg
+
