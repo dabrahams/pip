@@ -43,6 +43,39 @@ class PackageFinder(object):
         ## FIXME: also, we should track comes_from (i.e., use Link)
         self.dependency_links.extend(links)
 
+    @staticmethod
+    def _sort_locations(locations):
+        """
+        Sort locations into "files" (archives) and "urls", and return
+        a pair of lists (files,urls)
+        """
+        from mimetypes import guess_type
+        files = []
+        urls = []
+
+        # puts the url for the given file path into the appropriate
+        # list
+        def sort_path(path):
+            url = path_to_url2(path)
+            if guess_type(url, strict=False)[0] == 'text/html':
+                urls.append(url)
+            else: 
+                files.append(url)
+
+        for url in locations:
+            if url.startswith('file:'):
+                path = url_to_path(url)
+                if os.path.isdir(path):
+                    path = os.path.realpath(path)
+                    for item in os.listdir(path):
+                        sort_path(os.path.join(path,item))
+                elif os.path.isfile(path):
+                    sort_path(os.path.join(path,item))
+            else:
+                urls.append(url)
+        return files, urls
+
+
     def find_requirement(self, req, upgrade):
         url_name = req.url_name
         # Only check main index if index URL is given:
@@ -74,20 +107,8 @@ class PackageFinder(object):
             if url_name is not None and main_index_url is not None:
                 locations = [
                     posixpath.join(main_index_url.url, version)] + locations
-        file_locations = []
-        url_locations = []
-        for url in locations:
-            if url.startswith('file:'):
-                path = url_to_path(url)
-                if os.path.isdir(path):
-                    path = os.path.realpath(path)
-                    for item in os.listdir(path):
-                        file_locations.append(
-                            path_to_url2(os.path.join(path, item)))
-                elif os.path.isfile(path):
-                    file_locations.append(path_to_url2(path))
-            else:
-                url_locations.append(url)
+
+        file_locations, url_locations = self._sort_locations(locations)
 
         locations = [Link(url) for url in url_locations]
         logger.debug('URLs to search for versions for %s:' % req)
@@ -357,7 +378,12 @@ class HTMLPage(object):
                                 cache.set_is_archive(url)
                             return None
             logger.debug('Getting page %s' % url)
-            resp = urllib2.urlopen(url)
+            try:
+                resp = urllib2.urlopen(url)
+            except IOError:
+                import urllib
+                resp = urllib2.urlopen(urllib.basejoin(url,'index.html'))
+
             real_url = resp.geturl()
             headers = resp.info()
             inst = cls(resp.read(), real_url, headers)
