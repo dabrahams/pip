@@ -13,6 +13,7 @@ from cStringIO import StringIO
 
 here = Path(here)
 
+
 try:
     import distutils2
 except ImportError:
@@ -58,15 +59,13 @@ def create_projects(env, **projects):
 
         # Git bug?  This doesn't work!
         repo_url = pathname2url(paths[p])
-#        import pdb;pdb.set_trace()
         # repo_url = paths[p]
 
         open(index/p/'index.html', 'w').write(
             '<html><head><title>Links for %(p)s</title></head>'
             '<body>'
             '<h1>Links for %(p)s</h1>'
-#            '<a href="git+http://git.gitorious.org/boost/utility.git#egg=boost-utility">Git Repository</a>'
-            '<a href="file://%(repo_url)s#egg=%(p)s">Git Repository</a><br/>'
+            '<a href="git+file://%(repo_url)s#egg=%(p)s">Git Repository</a><br/>'
             '</body></html>'
             % locals()
             )
@@ -80,13 +79,19 @@ def reset():
     environ['PATH'] = Path.pathsep.join([here.folder/'scripts', environ['PATH']])
     return reset_env(environ)
 
+def ryppl(env, *args, **kw):
+    if '--pdb' in sys.argv:
+        return env.run('python', '-u', '-m', 'pdb', here.folder/'scripts'/'ryppl', *args, **kw)
+    else:
+        return env.run('ryppl', *args, **kw)
+
 class Simple(unittest2.TestCase):
 
     def test_fetch(self):
         env = reset()
         index,project_paths = create_projects(
             env, my_proj=open(here.folder/'distutils2'/'src'/'distutils2'/'tests'/'PKG-INFO').read())
-        env.run('ryppl', 'install', '--no-install', '-vvv', '-i', 'file://'+pathname2url(index), 'my_proj')
+        ryppl(env, 'install', '--no-install', '-vvv', '-i', 'file://'+pathname2url(index), 'my_proj')
 
 
 def test_suite():
