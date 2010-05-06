@@ -1,7 +1,8 @@
 #!/bin/sh
 
+# This was too painful when it came to setting breakpoints
 # Just so we don't inadvertently clobber our source
-cd /tmp
+# cd /tmp
 
 ### First get rid of all .pyc files.  Sometimes when debugging these
 ### hang around because python is using them and then pdb runs
@@ -19,6 +20,8 @@ if [ $? -ne 0 ]; then
 fi
 MY_ROOT=$(dirname $MY_PATH)
 
+set -e
+
 rm `find "$MY_ROOT" -name '*.pyc'`
 rm -rf "$MY_ROOT"/build "$MY_ROOT"/dist "$MY_ROOT"/pip.egg-info
 
@@ -33,8 +36,7 @@ source $HOME/.virtualenvs/clean/bin/activate
 PDB=""
 if [[ x"$1" == "x--pdb" ]]; then
     shift
-    PDB="python -m pdb"
+    PDB="python -u -m pdb"
 fi
 
 $PDB "$MY_ROOT"/scripts/pip $* install -vvv -i file://"$MY_ROOT"/tests/index FSPkg
-

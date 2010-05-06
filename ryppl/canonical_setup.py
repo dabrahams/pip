@@ -45,13 +45,13 @@ def metadata_to_setup_keywords(metadata):
         description = m.summary,
         long_description = m.description,
         keywords = ' '.join(m.keywords),
-        platforms = m.platform, 
+        platforms = m.platform,
         classifiers = m.classifier, 
         download_url = m.download_url,
-        requires = m.requires_dist or m.requires,
+        # We'll need to translate requirements to setuptools format
+        # requires = m.requires_dist or m.requires,
         provides = m.provides_dist or m.provides,
         obsoletes = m.obsoletes_dist or m.obsoletes,
         )
 
-setup(name=os.path.basename(ryppl.project_directory),
-      **metadata_to_setup_keywords(metadata))
+setup( **metadata_to_setup_keywords(metadata) )
