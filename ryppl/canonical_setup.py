@@ -1,46 +1,57 @@
-import ryppl, sys
+import ryppl, sys, cStringIO
 print '****** Canonical Ryppl setup.py file ******'
 print 'command line:', sys.argv
 print 'project directory =', repr(ryppl.project_directory)
 print 'project name =', os.path.basename(ryppl.project_directory)
 
-from setuptools import setup
+from distutils2.metadata import DistributionMetadata
 import os
+from setuptools import setup
 
-pkg_dir = os.path.join(ryppl.project_directory,'boost_python')
-if not os.path.isdir(pkg_dir):
-    os.mkdir(pkg_dir)
-    
-version = "0.9.0"
+metadata = DistributionMetadata(
+    path=os.path.join(ryppl.project_directory, '.ryppl', 'METADATA'))
 
 doc_dir = os.path.join(os.path.dirname(__file__), 'docs')
-index_filename = os.path.join(doc_dir, 'index.txt')
 
-long_description = """\
-The main website for ryppl is `ryppl.org <http://ryppl.org>`_.  
-"""
-try:
-    long_description = long_description + open(index_filename).read().split('split here', 1)[1]
-except:
-    pass
+simple_kw_map = dict(summary='description', )
+def metadata_to_setup_keywords(metadata):
+    # There's probably a more programmatic way, but until then, I just
+    # copied these keywords out of the distutils source
+
+    class item_to_attribute(object):
+        """
+        because I hate seeing identifiers between quotes
+        """
+        def __init__(self, target):
+            self.target = target
+
+        def __getattr__(self, name):
+            return self.target[name]
+
+    m = item_to_attribute(metadata)
+        
+    return dict(
+        # 'distclass': ???
+        # 'script_name':???
+        # 'script_args', ???
+        # 'options', ???
+        name = m.name,
+        version = m.version,
+        author = m.author,
+        author_email = m.author_email,
+        maintainer = m.maintainer,
+        maintainer_email = m.maintainer_email,
+        url = m.project_url,
+        description = m.summary,
+        long_description = m.description,
+        keywords = ' '.join(m.keywords),
+        platforms = m.platform, 
+        classifiers = m.classifier, 
+        download_url = m.download_url,
+        requires = m.requires_dist or m.requires,
+        provides = m.provides_dist or m.provides,
+        obsoletes = m.obsoletes_dist or m.obsoletes,
+        )
 
 setup(name=os.path.basename(ryppl.project_directory),
-      version=version,
-      description="A ryppl package",
-      long_description=long_description,
-      classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: MIT License',
-        'Topic :: Software Development :: Build Tools',
-      ],
-      keywords='easy_install distutils setuptools egg virtualenv pip package',
-      author='The Ryppl Project',
-      author_email='ryppl-dev@groups.google.com',
-      url='http://ryppl.org',
-      license='MIT',
-      install_requires='boost-type_traits>0.7.3dev',
-      dependency_links=['http://dabrahams.github.com/ryppl-test-index']
-      )
-      
+      **metadata_to_setup_keywords(metadata))

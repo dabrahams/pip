@@ -25,8 +25,9 @@ rm -rf "$MY_ROOT"/build "$MY_ROOT"/dist "$MY_ROOT"/pip.egg-info
 rm -rf $HOME/.virtualenvs/clean
 virtualenv --no-site-packages --unzip-setuptools --distribute $HOME/.virtualenvs/clean
 export PATH=$HOME/.virtualenvs/clean/bin:"$PATH"
-export PYTHONPATH=$MY_ROOT:$MY_ROOT/scripttest
+export PYTHONPATH=$MY_ROOT:$MY_ROOT/scripttest:$MY_ROOT/distutils2/src
 #export EDITOR=/Users/dave/bin/emacsx 
+pip install docutils # for distutils2, which uses docutils if it is present
 pip uninstall -y pip
 source $HOME/.virtualenvs/clean/bin/activate
 PDB=""

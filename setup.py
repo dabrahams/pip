@@ -1,5 +1,5 @@
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 version = "0.7.1"
@@ -35,7 +35,13 @@ setup(name='pip',
       author_email='python-virtualenv@groups.google.com',
       url='http://pip.openplans.org',
       license='MIT',
-      packages=['pip', 'pip.commands', 'pip.vcs', 'scripttest'],
-      package_dir={ 'scripttest':os.path.join('scripttest', 'scripttest') },
+
+      packages=(
+        find_packages('.') + find_packages('scripttest') 
+        + find_packages('distutils2/src')),
+
+      package_dir={ 'scripttest':os.path.join('scripttest', 'scripttest'),
+                    'distutils2':os.path.join('distutils2', 'src', 'distutils2'),
+                    },
       **kw)
       
