@@ -1,8 +1,7 @@
 build
+dist
 ._*
 *.pyc
-test-cache/
-test-scratch/
 *.egg-info/
 *.swp
 log*.txt
