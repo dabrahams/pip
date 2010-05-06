@@ -15,9 +15,6 @@ doc_dir = os.path.join(os.path.dirname(__file__), 'docs')
 
 simple_kw_map = dict(summary='description', )
 def metadata_to_setup_keywords(metadata):
-    # There's probably a more programmatic way, but until then, I just
-    # copied these keywords out of the distutils source
-
     class item_to_attribute(object):
         """
         because I hate seeing identifiers between quotes
@@ -30,6 +27,9 @@ def metadata_to_setup_keywords(metadata):
 
     m = item_to_attribute(metadata)
         
+    # There's probably a more declarative way, but until then, I just
+    # copied these keywords out of the distutils source
+
     return dict(
         # 'distclass': ???
         # 'script_name':???
