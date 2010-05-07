@@ -7,6 +7,7 @@ from pip.util import display_path
 from pip.vcs import vcs, VersionControl
 from pip.log import logger
 from urllib import url2pathname
+from urlparse import urlsplit, urlunsplit
 
 class Git(VersionControl):
     name = 'git'
@@ -21,8 +22,12 @@ class Git(VersionControl):
 
         # Works around an apparent Git bug
         # (see http://article.gmane.org/gmane.comp.version-control.git/146500)
-        if url and 'file://' in url:
-            url = url2pathname(url)
+        if url:
+            scheme,netloc,path,query,fragment = urlsplit(url)
+            if scheme.endswith('file'):
+                initial_slashes = path[:-len(path.lstrip('/'))]
+                newpath = initial_slashes + url2pathname(path).replace('\\','/').lstrip('/')
+                url = urlunsplit((scheme, netloc, newpath, query, fragment))
 
         super(Git,self).__init__(url, *args, **kwargs)
 
