@@ -17,14 +17,14 @@ class Git(VersionControl):
     guide = ('# This was a Git repo; to make it a repo again run:\n'
         'git init\ngit remote add origin %(url)s -f\ngit checkout %(rev)s\n')
 
-    def __init__(self, url):
+    def __init__(self, url=None, *args, **kwargs):
 
         # Works around an apparent Git bug
         # (see http://article.gmane.org/gmane.comp.version-control.git/146500)
-        if 'file://' in url:
+        if url and 'file://' in url:
             url = url2pathname(url)
 
-        super(Git,self).__init__(url)
+        super(Git,self).__init__(url, *args, **kwargs)
 
     def parse_vcs_bundle_file(self, content):
         url = rev = None
