@@ -1,3 +1,11 @@
+def main():
+    import pip, sys, pip.req, os, ryppl
+
+    # Patch pip to do our bidding!
+    pip.req.InstallRequirement._run_setup_py = (
+        ryppl._run_setup_py % os.path.join(os.path.dirname(ryppl.__file__), 'canonical_setup.py'))
+
+    return pip.main()
 
 _run_setup_py = """
 __file__ = %r

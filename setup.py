@@ -15,9 +15,9 @@ of pip with ``easy_install pip==dev``.
 long_description = long_description + open(index_filename).read().split('split here', 1)[1]
 
 if sys.platform == 'win32':
-    kw = dict(entry_points=dict(console_scripts=['pip=pip:main']))
+    kw = dict(entry_points=dict(console_scripts=['pip=pip:main', 'ryppl=ryppl:main']))
 else:
-    kw = dict(scripts=['scripts/pip'])
+    kw = dict(scripts=['scripts/pip', 'scripts/ryppl'])
 
 setup(name='pip',
       version=version,
@@ -42,6 +42,7 @@ setup(name='pip',
 
       package_dir={ 'scripttest':os.path.join('scripttest', 'scripttest'),
                     'distutils2':os.path.join('distutils2', 'src', 'distutils2'),
+                    'ryppl':'ryppl'
                     },
       **kw)
       

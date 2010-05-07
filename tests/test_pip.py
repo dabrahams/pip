@@ -272,7 +272,7 @@ class TestPipEnvironment(TestFileEnvironment):
         return TestPipResult( super(TestPipEnvironment,self).run(cwd=cwd,*args,**kw) )
 
     def __del__(self):
-        shutil.rmtree(self.root_path, ignore_errors=True)
+        pass#shutil.rmtree(self.root_path, ignore_errors=True)
 
 def run_pip(*args, **kw):
     return env.run('pip', *args, **kw)

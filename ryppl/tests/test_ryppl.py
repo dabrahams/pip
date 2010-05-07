@@ -14,15 +14,10 @@ from cStringIO import StringIO
 here = Path(here)
 
 try:
-    print '*** importing distutils2'
     import distutils2
 except ImportError:
-    print '*** FAILED'
     sys.path.insert(0, here.folder/'distutils2'/'src')
-    print '*** Updating path with', sys.path[0], 'and retrying'
     import distutils2
-
-print '*** distutils2 ==', distutils2.__file__
 
 from distutils2.metadata import DistributionMetadata as METADATA
 

@@ -24,14 +24,20 @@ rem ### instead, hard-reset the path to our default ###
 set "PATH=C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\system32\WindowsPowerShell\v1.0;C:\Program Files (x86)\Subversion\bin;C:\Program Files (x86)\TortoiseHg\;C:\Program Files (x86)\Bazaar"
 
 
+cd %TEMP%
+
 set "PATH=C:\Python26\Scripts;C:\Python26;%PATH%"
 virtualenv --no-site-packages --unzip-setuptools e:\clean
 set "PATH=E:\clean\Scripts;%PATH%"
-easy_install virtualenv
-easy_install nose
+pip install --download-cache=%TEMP% virtualenv
+pip install --download-cache=%TEMP% nose
+pip install --download-cache=%TEMP% scripttest
+pip install --download-cache=%TEMP% unittest2
 
 set "PATH=%PATH%;C:\msysgit\bin;C:\msysgit\mingw\bin"
 
-python -i c:\python26\scripts\nosetests-script.py -s -v %*
+
+rem python -i -m pdb c:/python26/scripts/nosetests-script.py -s -v %*
+python -u c:\python26\scripts\nosetests-script.py -w%MY_ROOT% -s -v %*
 
 
