@@ -18,7 +18,7 @@ try:
     import distutils2
 except ImportError:
     print '*** FAILED'
-    sys.path.insert(0, here.folder.folder/'distutils2'/'src')
+    sys.path.insert(0, here.folder/'distutils2'/'src')
     print '*** Updating path with', sys.path[0], 'and retrying'
     import distutils2
 
