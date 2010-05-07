@@ -18,6 +18,7 @@ try:
     import distutils2
 except ImportError:
     sys.path.insert(0, here.folder.folder/'distutils2'/'src')
+    import distutils2
     
 from distutils2.metadata import DistributionMetadata as METADATA
 
