@@ -7,7 +7,9 @@ dist
 log*.txt
 *.orig
 .gitignore
-**/#*#
-**/.#*
+#*#
+.#*
 **/*~
-**/.noseids
+.noseids
+.noseids
+.DS_Store

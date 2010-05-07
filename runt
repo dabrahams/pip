@@ -18,14 +18,15 @@ if [ $? -ne 0 ]; then
 fi
 MY_ROOT=$(dirname $MY_PATH)
 
-rm `find "$MY_ROOT"/.. -name '*.pyc'`
-rm -rf "$MY_ROOT"/../build "$MY_ROOT"/../dist "$MY_ROOT"/../pip.egg-info
+rm `find "$MY_ROOT" -name '*.pyc'`
+rm -rf "$MY_ROOT"/build "$MY_ROOT"/dist "$MY_ROOT"/pip.egg-info
 
 rmvirtualenv clean
 mkvirtualenv --no-site-packages --unzip-setuptools clean
 workon clean
 easy_install -f /tmp virtualenv
 easy_install -f /tmp nose
+easy_install -f /tmp unittest2
 # easy_install -f /tmp scripttest
 
 args=$*

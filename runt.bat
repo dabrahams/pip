@@ -1,9 +1,9 @@
 @echo off
 set MY_ROOT=%~dp0
 
-del /f/s/q %MY_ROOT%\..\*.pyc > nul 2>&1
-del /f/s/q %MY_ROOT%\..\build %MY_ROOT%\..\dist %MY_ROOT%\..\pip.egg-info> nul 2>&1
-rmdir /s/q %MY_ROOT%\..\build %MY_ROOT%\..\dist %MY_ROOT%\..\pip.egg-info> nul 2>&1
+del /f/s/q %MY_ROOT%\*.pyc > nul 2>&1
+del /f/s/q %MY_ROOT%\build %MY_ROOT%\dist %MY_ROOT%\pip.egg-info> nul 2>&1
+rmdir /s/q %MY_ROOT%\build %MY_ROOT%\dist %MY_ROOT%\pip.egg-info> nul 2>&1
 
 del /f/s/q e:\clean > nul 2>&1
 rmdir /s/q e:\clean > nul 2>&1
