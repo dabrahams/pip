@@ -1,10 +1,10 @@
 import os,sys
 
-# the directory containing all the tests
-here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# the ryppl/tests/ subdirectory
+here = os.path.dirname(os.path.abspath(__file__))
 
 # Make the pip test facilities available
-sys.path.insert(0, os.path.join(os.path.dirname(here), 'tests'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(here)), 'tests'))
 
 from path import *
 from test_pip import *
@@ -12,7 +12,6 @@ from urllib import pathname2url
 from cStringIO import StringIO
 
 here = Path(here)
-
 
 try:
     import distutils2
