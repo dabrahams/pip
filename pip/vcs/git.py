@@ -6,15 +6,25 @@ from pip import call_subprocess
 from pip.util import display_path
 from pip.vcs import vcs, VersionControl
 from pip.log import logger
+from urllib import url2pathname
 
 class Git(VersionControl):
     name = 'git'
     dirname = '.git'
     repo_name = 'clone'
-    schemes = ('git', 'git+http', 'git+ssh', 'git+git')
+    schemes = ('git', 'git+http', 'git+ssh', 'git+git', 'git+file')
     bundle_file = 'git-clone.txt'
     guide = ('# This was a Git repo; to make it a repo again run:\n'
         'git init\ngit remote add origin %(url)s -f\ngit checkout %(rev)s\n')
+
+    def __init__(self, url=None, *args, **kwargs):
+
+        # Works around an apparent Git bug
+        # (see http://article.gmane.org/gmane.comp.version-control.git/146500)
+        if url and 'file://' in url:
+            url = url2pathname(url)
+
+        super(Git,self).__init__(url, *args, **kwargs)
 
     def parse_vcs_bundle_file(self, content):
         url = rev = None
@@ -199,7 +209,9 @@ class Git(VersionControl):
             self.url = self.url.replace('git+', 'git+ssh://')
             url, rev = super(Git, self).get_url_rev()
             url = url.replace('ssh://', '')
-            return url, rev
-        return super(Git, self).get_url_rev()
+        else:                       
+            url, rev = super(Git, self).get_url_rev()
+
+        return url,rev
 
 vcs.register(Git)
