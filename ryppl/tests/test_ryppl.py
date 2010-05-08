@@ -57,9 +57,7 @@ def create_projects(env, **projects):
         env.run('git', 'add', Path('.ryppl')/'METADATA', cwd = paths[p])
         env.run('git', 'commit', '-m', 'initial checkin', cwd = paths[p])
 
-        # Git bug?  This doesn't work!
         repo_url = pathname2url(paths[p])
-        # repo_url = paths[p]
 
         open(index/p/'index.html', 'w').write(
             '<html><head><title>Links for %(p)s</title></head>'
