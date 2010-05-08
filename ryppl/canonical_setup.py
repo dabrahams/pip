@@ -9,7 +9,9 @@ import os
 from setuptools import setup
 
 metadata = DistributionMetadata(
-    path=os.path.join(ryppl.project_directory, '.ryppl', 'METADATA'))
+    path=os.path.join(ryppl.project_directory, '.ryppl', 'METADATA'),
+    platform_dependant=True
+    )
 
 doc_dir = os.path.join(os.path.dirname(__file__), 'docs')
 
