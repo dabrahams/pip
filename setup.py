@@ -14,7 +14,7 @@ of pip with ``easy_install pip==dev``.
 """
 long_description = long_description + open(index_filename).read().split('split here', 1)[1]
 
-if sys.platform == 'win32':
+if True or sys.platform == 'win32':
     kw = dict(entry_points=dict(console_scripts=['pip=pip:main', 'ryppl=ryppl:main']))
 else:
     kw = dict(scripts=['scripts/pip', 'scripts/ryppl'])

@@ -28,7 +28,7 @@ def create_virtualenv(where):
     
     try:
         import virtualenv
-        sys.argv = ['virtualenv', '--quiet', '--no-site-packages', where]
+        sys.argv = ['virtualenv', '--quiet', '--distribute', '--no-site-packages', where]
         virtualenv.main()
     finally: 
         sys.argv = save_argv
@@ -102,8 +102,15 @@ atexit.register(_cleanup)
 
 class TestPipResult(object):
 
-    def __init__(self, impl):
+    def __init__(self, impl, verbose=False):
         self._impl = impl
+        
+        if verbose:
+            print self.stdout
+            if self.stderr:
+                print '======= stderr ========'
+                print self.stderr
+                print '======================='
 
     def __getattr__(self, attr):
         return getattr(self._impl,attr)
@@ -200,6 +207,8 @@ class TestPipEnvironment(TestFileEnvironment):
 
     exe = '.exe' if sys.platform == 'win32' else ''
 
+    verbose = False
+
     def __init__(self, environ=None):
         
         self.root_path = Path(tempfile.mkdtemp('-piptest'))
@@ -264,15 +273,17 @@ class TestPipEnvironment(TestFileEnvironment):
         self.run('python', 'setup.py', 'install', cwd=src)
 
     def run(self, *args, **kw):
+        if self.verbose:
+            print '>> running', args, kw
         cwd = kw.pop('cwd', None)
         run_from = kw.pop('run_from',None)
         assert not cwd or not run_from, "Don't use run_from; it's going away"
         cwd = Path.string(cwd or run_from or self.cwd)
         assert not isinstance(cwd,Path)
-        return TestPipResult( super(TestPipEnvironment,self).run(cwd=cwd,*args,**kw) )
+        return TestPipResult( super(TestPipEnvironment,self).run(cwd=cwd,*args,**kw), verbose=self.verbose )
 
     def __del__(self):
-        pass#shutil.rmtree(self.root_path, ignore_errors=True)
+        shutil.rmtree(self.root_path, ignore_errors=True)
 
 def run_pip(*args, **kw):
     return env.run('pip', *args, **kw)
