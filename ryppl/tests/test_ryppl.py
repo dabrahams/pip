@@ -70,7 +70,7 @@ def create_projects(env, **projects):
         # demand_dirs(root/p)
         # open(root/p/'__init__.py', 'w').write('print "importing module %s"' % p)
 
-        env.run('git', 'add', '--all', '.', cwd = root)
+        env.run('git', 'add', '*', Path('.ryppl')/'*', cwd = root)
         env.run('git', 'commit', '-m', 'initial checkin', cwd = root)
 
         repo_url = pathname2url(root)
