@@ -10,6 +10,8 @@ import urllib2
 import urlparse
 import httplib
 import socket
+import gzip
+import StringIO
 from Queue import Queue
 from Queue import Empty as QueueEmpty
 from pip.log import logger
@@ -340,6 +342,18 @@ class PageCache(object):
         for url in urls:
             self._pages[url] = page
 
+def decoded_page (page):
+    encoding = page.info().get("Content-Encoding")
+    if encoding in ('gzip', 'x-gzip', 'deflate'):
+        content = page.read()
+        if encoding == 'deflate':
+            return StringIO.StringIO(zlib.decompress(content))
+        else:
+            return gzip.GzipFile('', 'rb', 9, StringIO.StringIO(content))
+    else:
+        return page
+
+
 class HTMLPage(object):
     """Represents one page, along with its URL"""
 
@@ -397,7 +411,7 @@ class HTMLPage(object):
 
             real_url = geturl(resp)
             headers = resp.info()
-            inst = cls(resp.read(), real_url, headers)
+            inst = cls(decoded_page(resp).read(), real_url, headers)
         except (urllib2.HTTPError, urllib2.URLError, socket.timeout, socket.error), e:
             desc = str(e)
             if isinstance(e, socket.timeout):
