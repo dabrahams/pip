@@ -153,6 +153,15 @@ def test_install_editable_from_git():
     result = run_pip('install', '-e', 'git://github.com/jezdez/django-feedutil.git#egg=django-feedutil', expect_error=True)
     result.assert_installed('django-feedutil', with_files=['.git'])
 
+def test_install_revision_from_git():
+    """
+    Test cloning a named revision from Git.
+    
+    """
+    e = reset_env()
+    result = run_pip('install', '-e', 'git://github.com/jezdez/django-feedutil.git@master#egg=django-feedutil')
+    result.assert_installed('django-feedutil', with_files=['.git'])
+
 def test_install_editable_from_hg():
     """
     Test cloning from Mercurial.
