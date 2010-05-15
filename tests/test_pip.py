@@ -239,7 +239,7 @@ class TestPipEnvironment(TestFileEnvironment):
         self.site_packages = self.lib/'site-packages'
 
         # put the test-scratch virtualenv's bin dir first on the PATH
-        self.environ['PATH'] = Path.pathsep.join( (self.bin_path, self.environ['PATH']) )
+        self.environ['PATH'] = str(Path.pathsep.join( (self.bin_path, self.environ['PATH']) ))
 
         # test that test-scratch virtualenv creation produced sensible venv python
         result = self.run('python', '-c', 'import sys; print sys.executable')
