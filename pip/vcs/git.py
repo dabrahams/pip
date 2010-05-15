@@ -28,6 +28,8 @@ class Git(VersionControl):
                 initial_slashes = path[:-len(path.lstrip('/'))]
                 newpath = initial_slashes + url2pathname(path).replace('\\','/').lstrip('/')
                 url = urlunsplit((scheme, netloc, newpath, query, fragment))
+                after_plus = scheme.find('+')+1
+                url = scheme[:after_plus]+ urlunsplit((scheme[after_plus:], netloc, newpath, query, fragment))
 
         super(Git,self).__init__(url, *args, **kwargs)
 
@@ -211,6 +213,7 @@ class Git(VersionControl):
         parsing. Hence we remove it again afterwards and return it as a stub.
         """
         if not '://' in self.url:
+            assert not 'file:' in self.url
             self.url = self.url.replace('git+', 'git+ssh://')
             url, rev = super(Git, self).get_url_rev()
             url = url.replace('ssh://', '')
