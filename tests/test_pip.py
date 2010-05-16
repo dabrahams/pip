@@ -215,7 +215,7 @@ class TestPipEnvironment(TestFileEnvironment):
             environ['PIP_DOWNLOAD_CACHE'] = str(download_cache)
 
         environ['PIP_NO_INPUT'] = '1'
-        environ['PIP_LOG_FILE'] = str(self.root_path/'pip-log.txt')
+        environ['PIP_LOG_FILE'] = self.root_path/'pip-log.txt'
 
         super(TestPipEnvironment,self).__init__(
             self.root_path, ignore_hidden=False, 
