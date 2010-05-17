@@ -30,25 +30,25 @@ def main(argv):
         assert (here/script_name).exists, "Can't locate directory of this script"
 
     # Make sure all external tools are set up to be used.
-    print 'Checking for installed prerequisites in PATH:',
+    print >> sys.stderr, 'Checking for installed prerequisites in PATH:',
     for tool in 'git', 'hg', 'bzr', 'svn':
-        print tool,'...',
+        print >> sys.stderr, tool,'...',
         assert_in_path(tool)
-    print 'ok'
+    print >> sys.stderr, 'ok'
 
     pip_root = here.folder
 
     #
     # Delete everything that could lead to stale test results
     #
-    print 'Cleaning ...',
+    print >> sys.stderr, 'Cleaning ...',
     for dirpath, dirnames, filenames in os.walk(pip_root):
         for f in filenames:
             if f.endswith('.pyc'):
                 os.unlink(Path(dirpath)/f)
     rmtree(pip_root/'build')
     rmtree(pip_root/'dist')
-    print 'ok'
+    print >> sys.stderr, 'ok'
     
     save_dir = os.getcwd()
     temp_dir = mkdtemp('-pip_auto_test')
@@ -58,7 +58,7 @@ def main(argv):
         #
         # Prepare a clean, writable workspace
         #
-        print 'Preparing test environment ...',
+        print >> sys.stderr, 'Preparing test environment ...',
         venv, lib, include, bin = create_virtualenv(temp_dir)
 
         abs_bin = Path(bin).abspath
@@ -78,7 +78,7 @@ def main(argv):
         call(pip, 'install', '-q', download_cache, 'nose')
         # for now, we need a pre-release version of scripttest
         call(pip, 'install', '-q', download_cache, '-e', 'hg+http://bitbucket.org/dabrahams/scripttest@8f1efcfa8361#egg=scripttest')
-        print 'ok'
+        print >> sys.stderr, 'ok'
         nosetests = abs_bin/'nosetests'+exe
         call( nosetests, '-w', pip_root/'tests', *argv[1:] )
 
