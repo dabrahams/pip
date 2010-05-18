@@ -48,7 +48,7 @@ def test_install_from_pypi():
     
     """
     e = reset_env()
-    result = run_pip('install', '-vvv', 'INITools==0.2', expect_error=True)
+    result = run_pip('install', '-vvv', 'INITools==0.2')
     new_files = sorted(result.files_created.keys())
     assert (e.site_packages / 'INITools-0.2-py%s.egg-info' % pyversion) in result.files_created, sorted(result.files_created.keys())
     assert (e.site_packages / 'initools') in result.files_created, sorted(result.files_created.keys())
@@ -81,8 +81,7 @@ def test_download_editable_to_custom_path():
     reset_env()
     mkdir('customdl')
     result = run_pip('install', '-e', 'svn+http://svn.colorstudy.com/INITools/trunk#egg=initools-dev',
-        '--src', 'customsrc', '--download', 'customdl',
-        expect_error=True)
+        '--src', 'customsrc', '--download', 'customdl')
     customsrc = Path('scratch')/'customsrc'/'initools'
     assert customsrc in result.files_created, sorted(result.files_created.keys())
     assert customsrc/'setup.py' in result.files_created, sorted(result.files_created.keys())
