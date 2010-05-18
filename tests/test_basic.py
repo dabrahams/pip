@@ -49,9 +49,8 @@ def test_install_from_pypi():
     """
     e = reset_env()
     result = run_pip('install', '-vvv', 'INITools==0.2')
-    new_files = sorted(result.files_created.keys())
-    assert (e.site_packages / 'INITools-0.2-py%s.egg-info' % pyversion) in result.files_created, sorted(result.files_created.keys())
-    assert (e.site_packages / 'initools') in result.files_created, sorted(result.files_created.keys())
+    assert (e.site_packages / 'INITools-0.2-py%s.egg-info' % pyversion) in result.files_created, str(result)
+    assert (e.site_packages / 'initools') in result.files_created, str(result)
 
 def test_editable_install():
     """
@@ -159,7 +158,7 @@ def test_install_revision_from_git():
     """
     e = reset_env()
 
-    result = run_pip('install', '-f', 'git+git://github.com/jezdez/django-contact-form.git#egg=django-contact-form', 'django-contact-form>0.3')
+    result = run_pip('install', '-vvv', '-f', 'git+git://github.com/jezdez/django-contact-form.git#egg=django-contact-form', 'django-contact-form>0.3')
 
     assert [x for x in result.files_created if 'django_contact_form' in x]
 
