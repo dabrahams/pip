@@ -14,7 +14,7 @@ from Queue import Queue
 from Queue import Empty as QueueEmpty
 from pip.log import logger
 from pip.util import Inf, path_to_url2, url_to_path
-from pip.util import normalize_name, splitext
+from pip.util import normalize_name, splitext, urlopen
 from pip.exceptions import DistributionNotFound
 
 __all__ = ['PackageFinder']
@@ -357,7 +357,7 @@ class HTMLPage(object):
                                 cache.set_is_archive(url)
                             return None
             logger.debug('Getting page %s' % url)
-            resp = urllib2.urlopen(url)
+            resp = urlopen(url)
             real_url = resp.geturl()
             headers = resp.info()
             inst = cls(resp.read(), real_url, headers)
