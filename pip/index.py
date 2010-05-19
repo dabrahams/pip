@@ -17,6 +17,12 @@ from pip.util import Inf, path_to_url2, url_to_path, geturl
 from pip.util import normalize_name, splitext
 from pip.exceptions import DistributionNotFound
 
+# Insurance against "creative" interpretation of the RFC:
+# http://bugs.python.org/issue8732
+def urlopen(url):
+    return urllib2.urlopen(
+        urllib2.Request(url, headers={'Accept-encoding':'identity'}))
+
 __all__ = ['PackageFinder']
 
 class PackageFinder(object):
@@ -394,11 +400,14 @@ class HTMLPage(object):
                                 cache.set_is_archive(url)
                             return None
             logger.debug('Getting page %s' % url)
+
+            def Request(url):
+                return urllib2.Request(url, headers={'Accept-encoding':'identity'})
             try:
-                resp = urllib2.urlopen(url)
+                resp = urlopen(url)
             except IOError:
                 import urllib
-                resp = urllib2.urlopen(urllib.basejoin(url,'index.html'))
+                resp = urlopen(urllib.basejoin(url,'index.html'))
 
             real_url = geturl(resp)
             headers = resp.info()
